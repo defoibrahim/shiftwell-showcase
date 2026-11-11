@@ -45,7 +45,7 @@ sequenceDiagram
   G->>G: JwtAuthGuard → AudienceGuard → RolesGuard → SubscriptionGuard
   G->>I: verified user (tenantId from the token, never from a header)
   I->>R: findAll(tenantId, …)
-  R->>DB: BEGIN; SET LOCAL app.tenant_id = '<uuid>'; SELECT …
+  R->>DB: BEGIN, then SET LOCAL app.tenant_id, then SELECT …
   DB-->>R: only this tenant's rows
 ```
 

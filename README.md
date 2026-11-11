@@ -56,7 +56,7 @@
   <img src="docs/screenshots/landing-admin-tour-payroll.png" width="49%" alt="Interactive admin tour on the landing page: the pay run screen with sample employees">
 </p>
 
-<sub>All screenshots are real captures of the live sites. The phone stack and the admin tour are interactive mock-ups on the marketing page, filled with illustrative sample data. They show the planned modules and are not captures of the signed-in console. No real company or employee data appears anywhere.</sub>
+<sub>All screenshots are real captures of the live sites. The phone stack and the admin tour are interactive mock-ups on the marketing page, filled with illustrative sample data shipped with the marketing site (URLs shown inside the mock-ups are illustrative too). They show the planned modules and are not captures of the signed-in console. No real company or employee data appears anywhere.</sub>
 
 ## Features
 
@@ -96,7 +96,7 @@ flowchart LR
     W["Next.js web<br/>admin console + /portal"]
     A["NestJS API<br/>modular monolith"]
   end
-  subgraph Ops["ops.shiftwell.everbuild.cloud"]
+  subgraph Ops["Operator host"]
     N2["nginx · TLS<br/>/ops and operator API only"]
   end
   DB[("PostgreSQL 16<br/>row-level security<br/>+ pg-boss jobs")]
@@ -120,7 +120,7 @@ The API is one deployable with walls inside it. `core/` holds tenancy, identity,
 
 ### Key engineering decisions
 
-- **Tenant isolation in three layers.** Every table has `tenantId` as the first column of every index. PostgreSQL row-level security is turned on and forced on every tenant table. Each request runs in a transaction that sets the tenant with `SET LOCAL`, never plain `SET`, so a pooled connection cannot carry one company's data into another company's request. The API connects as a role that owns nothing. Foreign keys are composite on tenant and id, because Postgres runs its integrity checks with RLS bypassed. A dedicated e2e suite proves the isolation, and it refuses to run as a role that could bypass RLS.
+- **Tenant isolation in three layers.** Every tenant table has `tenantId` as the first column of every index. PostgreSQL row-level security is turned on and forced on every tenant table. Each request runs in a transaction that sets the tenant with `SET LOCAL`, never plain `SET`, so a pooled connection cannot carry one company's data into another company's request. The API connects as a role that owns nothing. Foreign keys are composite on tenant and id, because Postgres runs its integrity checks with RLS bypassed. A dedicated e2e suite proves the isolation, and it refuses to run as a role that could bypass RLS.
 - **Auth that fails closed.** The global guards run in a fixed order: JWT, then audience, then roles, then subscription. After them, an interceptor (not middleware) sets the tenant from the verified token. A route without a declared audience is rejected. Refresh tokens rotate within a family, and replaying a used one revokes the whole family. Access is re-read from the database on every request. Sign-in errors never reveal whether an account exists, and per-account lockout works alongside per-IP rate limits.
 - **Money is integer fils.** No floats or decimal strings. The money helpers split amounts so the parts always add up exactly to the total, because a one-fil discrepancy gets a WPS bank file rejected.
 - **Country rules are data.** Identity document types, bank-account fields and formats, and salary-component tags come from per-country JSON rule packs. Supporting a new country means adding a file, not a schema change or an `if (country === 'AE')`.
@@ -143,18 +143,18 @@ The API is one deployable with walls inside it. `core/` holds tenancy, identity,
 
 ## My role
 
-I built this at **Sudan Tech Solutions (STS)** and was the main engineer on it:
+I worked on Shiftwell at **Sudan Tech Solutions (STS)**. I built the landing site and checkout on my own, and led the API work after the initial import:
 
 - **Landing site and checkout:** I wrote all 17 commits in its repository (September to October 2026), covering the design build, SEO and structured data, the contact form, live catalogue pricing, self-serve checkout and the VPS deploy pipeline.
-- **API and console:** the organisation's repository starts with a single import commit of the existing codebase, made by a teammate. Of the 25 commits after it, I wrote 24 (29 Sep to 1 Oct 2026). They add self-serve signup, the operator console with two-factor sign-in and emailed invitations, the free plan, landing checkout support, automatic deploys to the VPS, and a series of security and correctness fixes. A teammate added the first leave-module schema on 8 Oct 2026.
-- I also wrote the project's engineering guides: the architecture rules, the deploy runbook and the roadmap.
+- **API and console:** the organisation's repository starts with a single import commit of the existing codebase, made by a teammate. Of the 26 commits after it, I wrote 25 (17 changes plus 8 merges, 29 Sep to 1 Oct 2026). They add self-serve signup, the operator console with two-factor sign-in and emailed invitations, the free plan, landing checkout support, automatic deploys to the VPS, and a series of security and correctness fixes. A teammate added the first leave-module schema on 8 Oct 2026, and the leave module is being built by a teammate on a separate branch.
+- I wrote the AI/engineering guide (AGENTS.md) and the deploy runbook, and kept the architecture guide and roadmap in line with the code as features landed.
 
 ## Status
 
 Live. The landing site went up in September 2026, and the app has been deployed automatically since 30 September 2026:
 - Landing site: [shiftwell.everbuild.cloud](https://shiftwell.everbuild.cloud)
 - Admin console and employee portal: [app.shiftwell.everbuild.cloud](https://app.shiftwell.everbuild.cloud), where you sign in with a company code
-- Operator console: [ops.shiftwell.everbuild.cloud](https://ops.shiftwell.everbuild.cloud)
+- Operator console: on its own TOTP-protected host, for platform staff only
 
 Core HR, the employee portal, billing, signup and the operator console are in production. Attendance, shifts, leave and payroll are next on the roadmap. The checkout currently runs with payments switched off, so a company is created at signup, until a real payment provider is integrated.
 
