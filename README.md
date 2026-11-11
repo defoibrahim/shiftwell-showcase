@@ -87,7 +87,7 @@
 ## Architecture
 
 ```mermaid
-flowchart LR
+flowchart TB
   subgraph Public
     L["Landing site<br/>Next.js 14 · Bun<br/>shiftwell.everbuild.cloud"]
   end
