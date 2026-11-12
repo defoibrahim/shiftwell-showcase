@@ -2,14 +2,15 @@
 
 # Shiftwell
 
-**Multi-tenant HR platform for UAE and GCC shift teams: Core HR, self-serve signup with live AED pricing, and a two-factor operator console.**
+**Multi-tenant HR platform for UAE and GCC shift teams: Core HR, self-serve signup with live AED pricing, a two-factor operator console, and an offline-first Flutter time-and-attendance app.**
 
 ![Status](https://img.shields.io/badge/status-live-2ea44f?style=flat-square)
-![Platform](https://img.shields.io/badge/platform-web%20%C2%B7%20mobile%20web-3A5BD9?style=flat-square)
+![Platform](https://img.shields.io/badge/platform-web%20%C2%B7%20mobile%20web%20%C2%B7%20Flutter%20app-3A5BD9?style=flat-square)
 ![NestJS](https://img.shields.io/badge/API-NestJS%2010-E0234E?style=flat-square&logo=nestjs&logoColor=white)
 ![Next.js](https://img.shields.io/badge/web-Next.js%2014-000000?style=flat-square&logo=nextdotjs&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL%2016-row--level%20security-4169E1?style=flat-square&logo=postgresql&logoColor=white)
 ![Prisma](https://img.shields.io/badge/ORM-Prisma-2D3748?style=flat-square&logo=prisma&logoColor=white)
+![Flutter](https://img.shields.io/badge/mobile-Flutter%203.41%20%C2%B7%20GetX-02569B?style=flat-square&logo=flutter&logoColor=white)
 
 [Live site](https://shiftwell.everbuild.cloud) · [Console sign-in](https://app.shiftwell.everbuild.cloud) · [Portfolio](https://portfolio.everbuild.cloud) · [LinkedIn](https://linkedin.com/in/dafallah-ibrahim)
 
@@ -56,7 +57,7 @@
   <img src="docs/screenshots/landing-admin-tour-payroll.png" width="49%" alt="Interactive admin tour on the landing page: the pay run screen with sample employees">
 </p>
 
-<sub>All screenshots are real captures of the live sites. The phone stack and the admin tour are interactive mock-ups on the marketing page, filled with illustrative sample data shipped with the marketing site (URLs shown inside the mock-ups are illustrative too). They show the planned modules and are not captures of the signed-in console. No real company or employee data appears anywhere.</sub>
+<sub>The screenshots above are real captures of the live sites (the mobile app has its own section below). The phone stack and the admin tour are interactive mock-ups on the marketing page, filled with illustrative sample data shipped with the marketing site (URLs shown inside the mock-ups are illustrative too). They show the planned modules and are not captures of the signed-in console. No real company or employee data appears anywhere.</sub>
 
 ## Features
 
@@ -84,12 +85,58 @@
 
 **Planned modules.** The landing page sells Attendance, Shifts, Leave and Payroll (with the UAE WPS salary file). In the API they exist as isolated module scaffolds behind the entitlement system. Work on the leave schema had started by the last commit. Payroll is designed but not yet implemented (see [docs/architecture.md](docs/architecture.md)).
 
+## Mobile app (Flutter)
+
+**Workforce Mobile** is the employee-facing app: an offline-first time-and-attendance client for shift workers. It is a separate private repository, written in Flutter.
+
+<p align="center">
+  <img src="docs/screenshots/mobile-app/02-punch-ready.png" width="24%" alt="Punch tab before the shift: 'Inside worksite, Marina Site B, 40 m radius', a large 'Hold to punch in' button and today's 06:00 to 14:00 shift card">
+  <img src="docs/screenshots/mobile-app/03-punch-hold-to-confirm.png" width="24%" alt="Hold-to-punch: a progress ring fills around the button while it reads 'Keep holding…'">
+  <img src="docs/screenshots/mobile-app/04-punched-in-confirmation.png" width="24%" alt="Full-screen green 'Punched in' confirmation: 05:57 at Marina Site B, recorded on this phone, syncs when there is signal">
+  <img src="docs/screenshots/mobile-app/05-on-shift-progress.png" width="24%" alt="On shift: 'Punch out' button with a green shift-progress ring and elapsed timer, worked 2h 44m of 8h scheduled, and recent activity">
+</p>
+<p align="center">
+  <img src="docs/screenshots/mobile-app/06-punch-history.png" width="24%" alt="Punch history by day, with Missed, Late 14m, OT 2h 33m and rest-day rows">
+  <img src="docs/screenshots/mobile-app/01-login.png" width="24%" alt="Sign-in screen with empty Employee ID and PIN fields, branded with the company and site">
+  <img src="docs/screenshots/mobile-app/07-profile.png" width="24%" alt="'Me' tab: identity header, account rows, notifications, location permission, theme, language, security and help">
+  <img src="docs/screenshots/mobile-app/08-profile-settings.png" width="24%" alt="Profile scrolled down to sign out and the app version">
+</p>
+<p align="center">
+  <img src="docs/screenshots/mobile-app/11-punch-arabic-rtl.png" width="24%" alt="Punch screen in Arabic, right-to-left, on shift, with Arabic-Indic numerals">
+  <img src="docs/screenshots/mobile-app/10-profile-arabic-rtl.png" width="24%" alt="Profile screen in Arabic, right-to-left">
+  <img src="docs/screenshots/mobile-app/12-profile-dark-theme.png" width="24%" alt="Profile screen in the dark theme">
+</p>
+
+<sub>These screens are rendered from the Flutter codebase in a phone viewport (390 × 844 at 3×). The app was built for Flutter web on GitHub Actions with its mock data source and driven by headless Chrome. They are not native Android or iOS captures. The employee, site, supervisor and company shown ("Rashid Alam", EMP-40921, Falcon Facilities, Marina Site B) are the app's own fictional fixtures. The clock was fixed at 05:57 and 08:42 Dubai time to show the before-shift and on-shift states.</sub>
+
+**Features**
+- Sign-in with Employee ID and PIN, optional biometric unlock (`local_auth`), and handling for account lockout and expired sessions. Punches keep queuing and syncing even if the session expires.
+- Hold-to-punch with a geofence check against the assigned site. It tells apart inside the zone, outside the zone, weak GPS, location turned off and no assigned site.
+- An offline punch queue. Each punch is synced, pending, rejected or not sent, and carries a ULID idempotency key from a hand-written generator, so a retried punch cannot be recorded twice.
+- A live shift-progress ring with an elapsed timer, plus today's worked, scheduled and break totals.
+- Punch history built from daily records, with late, missed punch, overtime, absent, out-of-zone and left-early flags.
+- A profile hub with light and dark themes, English and Arabic with full right-to-left layout, location-permission status, notifications, security and an HR help sheet.
+- Five tabs: Punch, Roster, Leave, Pay and Me. Roster, Leave and Pay, along with the day-detail, correction, payslip, notification, personal-info and employment screens, are placeholders for now.
+
+**Stack**
+- Flutter 3.41 and Dart 3.11. **GetX** handles routing, bindings, route middleware and reactive state.
+- get_it + injectable for dependency injection, with the mock or remote data source chosen at build time (`--dart-define=DATA_SOURCE`).
+- Clean architecture per feature (domain, data and presentation layers), with dartz `Either` results instead of thrown errors.
+- dio behind a single API-client wrapper (only sign-in uses it so far), plus flutter_secure_storage, shared_preferences, permission_handler, geolocator and connectivity_plus.
+- flutter_screenutil, skeletonizer, pull_to_refresh, google_nav_bar, Lucide icons, a bundled Manrope font, and gen_l10n for English and Arabic.
+- About 21k lines of Dart in `lib/`, 155 test files and about 450 golden images. The app's CI checks that generated code is current, then runs the formatter, `flutter analyze --fatal-infos` and the tests. Design is documented in a spec, a brief and ADRs.
+
+**How it connects to the backend.** Not yet, and on purpose. The app's spec defers the API contract to a later "remote contract" document, and the domain layer stays transport-neutral: no entity, use case or repository names an HTTP concept. Each repository has an in-memory fixture implementation today, covering the profile, a fixed site with a 40 m geofence, a 06:00 to 14:00 shift, punch history and a fake location service. Remote implementations will be registered once the contract with the Shiftwell API exists, and they will be selected at build time without touching the domain or UI. The one network call today is sign-in, which goes to the public dummyjson.com test service as a stand-in. Background sync (workmanager) and a local SQLite store (drift) are declared for that phase but not used yet. The visual design follows the Shiftwell brand tokens from the landing site.
+
 ## Architecture
 
 ```mermaid
 flowchart TB
   subgraph Public
     L["Landing site<br/>Next.js 14 · Bun<br/>shiftwell.everbuild.cloud"]
+  end
+  subgraph Phone["Employee phone"]
+    MA["Workforce Mobile<br/>Flutter · GetX<br/>offline punch queue"]
   end
   subgraph App["app.shiftwell.everbuild.cloud"]
     N1["nginx · TLS"]
@@ -103,6 +150,7 @@ flowchart TB
   RP["Country rule packs<br/>ae.json · in.json · sd.json"]
   M["Mailtrap<br/>invites · resets"]
   GH["GitHub Actions<br/>lint · typecheck · unit + e2e · images"]
+  DJ["dummyjson.com<br/>sign-in stand-in"]
 
   L -- "GET catalogue / POST checkout (CORS: /api/signup only)" --> A
   N1 --> W
@@ -114,7 +162,11 @@ flowchart TB
   A --> RP
   A --> M
   GH -- "SSH: deploy.sh, health check, rollback" --> App
+  MA -. "planned: remote data sources once the API contract is defined" .-> N1
+  MA -- "sign-in only, for now" --> DJ
 ```
+
+The dotted arrow is planned work. The mobile app runs on in-memory fixtures today and is not yet connected to the API (see [Mobile app](#mobile-app-flutter)).
 
 The API is one deployable with walls inside it. `core/` holds tenancy, identity, org, billing, signup and operator. `modules/` holds attendance, shifts, leave and payroll, kept as islands. `bridges/` is the only place two modules meet. Lint enforces these boundaries, so a cross-module import fails the build. There's more depth in [docs/architecture.md](docs/architecture.md).
 
@@ -137,14 +189,16 @@ The API is one deployable with walls inside it. `core/` holds tenancy, identity,
 | Auth | JWT access tokens + rotating refresh tokens in httpOnly cookies, argon2, TOTP for operators |
 | Admin console and portal | Next.js 14 (App Router), React 18, Tailwind CSS, Radix UI primitives |
 | Landing and checkout | Next.js 14, Tailwind, shadcn/ui, Bun, schema.org structured data |
+| Mobile app | Flutter 3.41 / Dart 3.11, GetX (routing, DI bindings, state), get_it + injectable, dartz, dio, geolocator, permission_handler, local_auth, flutter_secure_storage, gen_l10n (English + Arabic RTL) |
 | Mail | Mailtrap (invitations, password resets, operator setup) |
 | Infra | Docker Compose, nginx + certbot, Caddy for local HTTPS, GitHub Actions CI/CD to a VPS |
 | Quality | ESLint with architecture-boundary rules, Jest unit tests and e2e suites, generated API types checked in CI |
 
 ## My role
 
-I worked on Shiftwell at **Sudan Tech Solutions (STS)**. I built the landing site and checkout on my own, and led the API work after the initial import:
+I worked on Shiftwell at **Sudan Tech Solutions (STS)**. I built the landing site, checkout and Flutter mobile app on my own, and led the API work after the initial import:
 
+- **Flutter mobile app (Workforce Mobile):** I'm the only author. I wrote all 38 commits in its repository (12 August to 16 September 2026), covering the architecture, the design system, punch with geofencing, the offline queue, attendance history, auth and the profile hub, plus the tests, golden images, CI and the spec and ADR docs.
 - **Landing site and checkout:** I wrote all 17 commits in its repository (September to October 2026), covering the design build, SEO and structured data, the contact form, live catalogue pricing, self-serve checkout and the VPS deploy pipeline.
 - **API and console:** the organisation's repository starts with a single import commit of the existing codebase, made by a teammate. Of the 26 commits after it, I wrote 25 (17 changes plus 8 merges, 29 Sep to 1 Oct 2026). They add self-serve signup, the operator console with two-factor sign-in and emailed invitations, the free plan, landing checkout support, automatic deploys to the VPS, and a series of security and correctness fixes. A teammate added the first leave-module schema on 8 Oct 2026, and the leave module is being built by a teammate on a separate branch.
 - I wrote the AI/engineering guide (AGENTS.md) and the deploy runbook, and kept the architecture guide and roadmap in line with the code as features landed.
@@ -156,7 +210,7 @@ Live. The landing site went up in September 2026, and the app has been deployed 
 - Admin console and employee portal: [app.shiftwell.everbuild.cloud](https://app.shiftwell.everbuild.cloud), where you sign in with a company code
 - Operator console: on its own TOTP-protected host, for platform staff only
 
-Core HR, the employee portal, billing, signup and the operator console are in production. Attendance, shifts, leave and payroll are next on the roadmap. The checkout currently runs with payments switched off, so a company is created at signup, until a real payment provider is integrated.
+Core HR, the employee portal, billing, signup and the operator console are in production. The Flutter mobile app is in development: the punch, history, auth and profile flows work on mock data, and connecting them to the API is the next step. Attendance, shifts, leave and payroll are next on the roadmap. The checkout currently runs with payments switched off, so a company is created at signup, until a real payment provider is integrated.
 
 ---
 
