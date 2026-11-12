@@ -90,24 +90,37 @@
 **Workforce Mobile** is the employee-facing app: an offline-first time-and-attendance client for shift workers. It is a separate private repository, written in Flutter.
 
 <p align="center">
-  <img src="docs/screenshots/mobile-app/02-punch-ready.png" width="24%" alt="Punch tab before the shift: 'Inside worksite, Marina Site B, 40 m radius', a large 'Hold to punch in' button and today's 06:00 to 14:00 shift card">
-  <img src="docs/screenshots/mobile-app/03-punch-hold-to-confirm.png" width="24%" alt="Hold-to-punch: a progress ring fills around the button while it reads 'Keep holding…'">
-  <img src="docs/screenshots/mobile-app/04-punched-in-confirmation.png" width="24%" alt="Full-screen green 'Punched in' confirmation: 05:57 at Marina Site B, recorded on this phone, syncs when there is signal">
-  <img src="docs/screenshots/mobile-app/05-on-shift-progress.png" width="24%" alt="On shift: 'Punch out' button with a green shift-progress ring and elapsed timer, worked 2h 44m of 8h scheduled, and recent activity">
-</p>
-<p align="center">
-  <img src="docs/screenshots/mobile-app/06-punch-history.png" width="24%" alt="Punch history by day, with Missed, Late 14m, OT 2h 33m and rest-day rows">
-  <img src="docs/screenshots/mobile-app/01-login.png" width="24%" alt="Sign-in screen with empty Employee ID and PIN fields, branded with the company and site">
-  <img src="docs/screenshots/mobile-app/07-profile.png" width="24%" alt="'Me' tab: identity header, account rows, notifications, location permission, theme, language, security and help">
-  <img src="docs/screenshots/mobile-app/08-profile-settings.png" width="24%" alt="Profile scrolled down to sign out and the app version">
-</p>
-<p align="center">
-  <img src="docs/screenshots/mobile-app/11-punch-arabic-rtl.png" width="24%" alt="Punch screen in Arabic, right-to-left, on shift, with Arabic-Indic numerals">
-  <img src="docs/screenshots/mobile-app/10-profile-arabic-rtl.png" width="24%" alt="Profile screen in Arabic, right-to-left">
-  <img src="docs/screenshots/mobile-app/12-profile-dark-theme.png" width="24%" alt="Profile screen in the dark theme">
+  <img src="docs/screenshots/mobile-app/cover-trio.png" width="100%" alt="Three framed phones: the on-shift punch screen with its progress ring in the centre, the punch history with Missed, Late and overtime flags on the left, and the green offline punch-in confirmation on the right">
 </p>
 
-<sub>These screens are rendered from the Flutter codebase in a phone viewport (390 × 844 at 3×). The app was built for Flutter web on GitHub Actions with its mock data source and driven by headless Chrome. They are not native Android or iOS captures. The employee, site, supervisor and company shown ("Rashid Alam", EMP-40921, Falcon Facilities, Marina Site B) are the app's own fictional fixtures. The clock was fixed at 05:57 and 08:42 Dubai time to show the before-shift and on-shift states.</sub>
+<p align="center">
+  <img src="docs/screenshots/mobile-app/framed/01-login.png" width="31%" alt="Sign-in screen in a phone frame: empty Employee ID and PIN fields, branded with Falcon Facilities and Marina Site B">
+  <img src="docs/screenshots/mobile-app/framed/02-punch-ready.png" width="31%" alt="Punch tab before the shift: 'Inside worksite, Marina Site B, 40 m radius', a large 'Hold to punch in' button and today's 06:00 to 14:00 shift card">
+  <img src="docs/screenshots/mobile-app/framed/03-punch-hold-to-confirm.png" width="31%" alt="Hold-to-punch: a progress ring fills around the button while it reads 'Keep holding…'">
+</p>
+<p align="center">
+  <img src="docs/screenshots/mobile-app/framed/04-punched-in-confirmation.png" width="31%" alt="Full-screen green 'Punched in' confirmation: 05:57 at Marina Site B, recorded on this phone, syncs when there is signal">
+  <img src="docs/screenshots/mobile-app/framed/05-on-shift-progress.png" width="31%" alt="On shift: 'Punch out' button with a green shift-progress ring and elapsed timer, worked 2h 44m of 8h scheduled, and recent activity">
+  <img src="docs/screenshots/mobile-app/framed/06-punch-history.png" width="31%" alt="Punch history by day, with Missed, Late 14m, OT 2h 33m and rest-day rows">
+</p>
+<p align="center">
+  <img src="docs/screenshots/mobile-app/framed/07-profile.png" width="31%" alt="'Me' tab: identity header, account rows, notifications, location permission, theme, language, security and help">
+  <img src="docs/screenshots/mobile-app/framed/08-profile-settings.png" width="31%" alt="Profile scrolled down to sign out and the app version">
+  <img src="docs/screenshots/mobile-app/framed/12-profile-dark-theme.png" width="31%" alt="Profile screen in the dark theme">
+</p>
+<p align="center">
+  <img src="docs/screenshots/mobile-app/framed/11-punch-arabic-rtl.png" width="31%" alt="Punch screen in Arabic, on shift, with Arabic-Indic numerals">
+  <img src="docs/screenshots/mobile-app/framed/10-profile-arabic-rtl.png" width="31%" alt="Profile screen in Arabic">
+</p>
+
+<sub>These screens are rendered from the Flutter codebase in a phone viewport (390 × 844 at 3×). The app was built for Flutter web on GitHub Actions with its mock data source and driven by headless Chrome. They are not native Android or iOS captures. Each capture is shown inside a drawn phone frame; the 9:41 status bar, Dynamic Island and home indicator belong to the frame, not to the app. The employee, site, supervisor and company shown ("Rashid Alam", EMP-40921, Falcon Facilities, Marina Site B) are the app's own fictional fixtures. The clock was fixed at 05:57 and 08:42 Dubai time to show the before-shift and on-shift states.</sub>
+
+**Store-style previews**
+
+<p align="center">
+  <img src="docs/screenshots/mobile-app/card-1-punch.png" width="31%" alt="Store-style preview card: 'Hold to punch in, even offline', geofence check first, then it syncs when there is signal, over the hold-to-punch screen">
+  <img src="docs/screenshots/mobile-app/card-2-history.png" width="31%" alt="Store-style preview card: 'Late, missed and overtime at a glance', every day's punches with clear flags, over the punch history screen">
+</p>
 
 **Features**
 - Sign-in with Employee ID and PIN, optional biometric unlock (`local_auth`), and handling for account lockout and expired sessions. Punches keep queuing and syncing even if the session expires.
